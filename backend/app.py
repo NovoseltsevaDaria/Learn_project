@@ -1,20 +1,19 @@
-import os
-
 from flask import Flask, jsonify
 from flask_cors import CORS
+import os
 
-app = Flask(__name__)
+app=Flask(__name__)
 
 CORS(app)
 
 @app.route('/')
 def home():
     return jsonify({
-        'message': 'API системы учета товаров',
+        'message': 'API ситемы учета товаров',
         'version': '1.0.0',
-        'endpoint': {
-            'GET/': 'Информация об API',
-            'GET/health': 'Проверка состояния сервера'
+        'endpoints': {
+            'GET /': 'Информация об API',
+            'GET /health': 'Проверка состояния сервера'
         }
     })
 
@@ -27,10 +26,10 @@ if __name__ == '__main__':
         os.makedirs('data')
         print("Создана папка 'data'")
 
-    print("="*40)
+    print("=" * 40)
     print("Сервер запущен")
     print("API доступен по адресу: http://localhost:5000")
     print("Фронтенд: frontend/index.html")
-    print("="*40)
+    print("=" * 40)
 
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)
