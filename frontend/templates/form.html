@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{% if room %}Редактировать номер{% else %}Добавить номер{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <h1>{% if room %}✎ Редактировать номер{% else %}✎ Добавить новый номер{% endif %}</h1>
 
+    {% if error %}
+        <div class="error">⚠ Ошибка: {{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+        <label>Номер комнаты:</label>
+        <input type="number" name="room_number" value="{{ room.room_number if room else '' }}" required><br>
+
+        <label>Тип:</label>
+        <select name="type" required>
+            <option value="single" {% if room and room.type == 'single' %}selected{% endif %}>Одноместный</option>
+            <option value="double" {% if room and room.type == 'double' %}selected{% endif %}>Двухместный</option>
+            <option value="suite" {% if room and room.type == 'suite' %}selected{% endif %}>Люкс</option>
+        </select><br>
+
+        <label>Цена за ночь (₽):</label>
+        <input type="number" step="0.01" name="price_per_night" value="{{ room.price_per_night if room else '' }}" required><br>
+
+        <label>Вместимость (чел):</label>
+        <input type="number" name="capacity" min="1" max="6" value="{{ room.capacity if room else '' }}" required><br>
+
+        <label>
+            <input type="checkbox" name="is_available" {% if room and room.is_available %}checked{% elif not room %}checked{% endif %}> Номер свободен
+        </label><br>
+
+        <label>Описание:</label><br>
+        <textarea name="description" rows="3" cols="40">{{ room.description if room and room.description else '' }}</textarea><br>
+
+        <button type="submit">Сохранить</button>
+        <a href="/">Отмена</a>
+    </form>
 </body>
 </html>
