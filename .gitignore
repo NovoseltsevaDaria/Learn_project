@@ -10,3 +10,8 @@ env/
 .idea/
 
 Thumbs.db
+
+# База данных (не коммитим сам файл БД)
+*.db
+*.sqlite
+*.sqlite3
