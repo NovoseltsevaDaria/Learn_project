@@ -33,7 +33,7 @@
             </td>
             <td>{{ room.price_per_night }} ₽</td>
             <td>{{ room.capacity }}</td>
-            <td class="{ if room.is_available %}available{% else %}not-available{% endif %}">
+            <td class="{% if room.is_available %}available{% else %}not-available{% endif %}">
                 {% if room.is_available %}✔ Свободен{% else %}✘ Занят{% endif %}
             </td>
             <td>
