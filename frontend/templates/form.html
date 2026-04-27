@@ -2,42 +2,112 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>{% if room %}Редактировать номер{% else %}Добавить номер{% endif %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if room %}Редактировать номер{% else %}Добавить номер{% endif %} - Отель</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <h1>{% if room %}✎ Редактировать номер{% else %}✎ Добавить новый номер{% endif %}</h1>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="form-container">
+            <div class="card form-card shadow-lg border-0">
+                <div class="card-header text-white py-4">
+                    <div class="text-center">
+                        <i class="fas fa-hotel fa-3x mb-2"></i>
+                        <h2 class="h3 mb-0">
+                            {% if room %}
+                                <i class="fas fa-edit me-2"></i>Редактирование номера
+                            {% else %}
+                                <i class="fas fa-plus-circle me-2"></i>Добавление номера
+                            {% endif %}
+                        </h2>
+                    </div>
+                </div>
 
-    {% if error %}
-        <div class="error">⚠ Ошибка: {{ error }}</div>
-    {% endif %}
+                <div class="card-body p-4">
+                    {% if error %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
 
-    <form method="post">
-        <label>Номер комнаты:</label>
-        <input type="number" name="room_number" value="{{ room.room_number if room else '' }}" required><br>
+                    <form method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-hashtag me-1"></i>Номер комнаты *
+                            </label>
+                            <input type="number" class="form-control" name="room_number"
+                                   value="{{ room.room_number if room else '' }}" required min="1" step="1">
+                            <small class="text-muted">Только положительные числа (101, 202, 305...)</small>
+                        </div>
 
-        <label>Тип:</label>
-        <select name="type" required>
-            <option value="single" {% if room and room.type == 'single' %}selected{% endif %}>Одноместный</option>
-            <option value="double" {% if room and room.type == 'double' %}selected{% endif %}>Двухместный</option>
-            <option value="suite" {% if room and room.type == 'suite' %}selected{% endif %}>Люкс</option>
-        </select><br>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-bed me-1"></i>Тип номера *
+                            </label>
+                            <select class="form-select" name="type" required>
+                                <option value="single" {% if room and room.type == 'single' %}selected{% endif %}>
+                                    <i class="fas fa-user"></i> Одноместный
+                                </option>
+                                <option value="double" {% if room and room.type == 'double' %}selected{% endif %}>
+                                    <i class="fas fa-users"></i> Двухместный
+                                </option>
+                                <option value="suite" {% if room and room.type == 'suite' %}selected{% endif %}>
+                                    <i class="fas fa-crown"></i> Люкс
+                                </option>
+                            </select>
+                        </div>
 
-        <label>Цена за ночь (₽):</label>
-        <input type="number" step="0.01" name="price_per_night" value="{{ room.price_per_night if room else '' }}" required><br>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-ruble-sign me-1"></i>Цена за ночь (₽) *
+                            </label>
+                            <input type="number" step="0.01" class="form-control" name="price_per_night"
+                                   value="{{ room.price_per_night if room else '' }}" required min="0.01">
+                        </div>
 
-        <label>Вместимость (чел):</label>
-        <input type="number" name="capacity" min="1" max="6" value="{{ room.capacity if room else '' }}" required><br>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-person-walking-arrow-right me-1"></i>Вместимость (человек) *
+                            </label>
+                            <input type="number" class="form-control" name="capacity"
+                                   value="{{ room.capacity if room else '' }}" required min="1" max="6">
+                            <small class="text-muted">От 1 до 6 человек</small>
+                        </div>
 
-        <label>
-            <input type="checkbox" name="is_available" {% if room and room.is_available %}checked{% elif not room %}checked{% endif %}> Номер свободен
-        </label><br>
+                        <div class="mb-4 form-check form-switch">
+                            <input type="checkbox" class="form-check-input" name="is_available"
+                                   style="width: 3rem; height: 1.5rem; cursor: pointer;"
+                                   {% if room and room.is_available or not room %}checked{% endif %}>
+                            <label class="form-check-label ms-2 fw-bold">
+                                <i class="fas fa-door-open me-1"></i>Номер свободен для бронирования
+                            </label>
+                        </div>
 
-        <label>Описание:</label><br>
-        <textarea name="description" rows="3" cols="40">{{ room.description if room and room.description else '' }}</textarea><br>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-align-left me-1"></i>Описание
+                            </label>
+                            <textarea class="form-control" name="description" rows="3"
+                                      placeholder="Например: Вид на море, кондиционер, Wi-Fi...">{{ room.description if room and room.description else '' }}</textarea>
+                        </div>
 
-        <button type="submit">Сохранить</button>
-        <a href="/">Отмена</a>
-    </form>
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-submit text-white">
+                                <i class="fas fa-save me-2"></i>Сохранить
+                            </button>
+                            <a href="/" class="btn btn-secondary flex-grow-1">
+                                <i class="fas fa-times me-2"></i>Отмена
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

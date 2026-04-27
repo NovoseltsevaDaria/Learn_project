@@ -2,52 +2,111 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Отель - Номера</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отель - Управление номерами</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<h1>ᵔᴗᵔ Список номеров отеля ᵔᴗᵔ</h1>
-<a href="/create" class = "btn">✎ Добавить номер</a>
+    <div class="container-fluid px-4 py-5">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header text-white py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-hotel fa-2x me-3"></i>
+                                <h1 class="d-inline-block h3 mb-0">Управление номерами отеля</h1>
+                            </div>
+                            <a href="/create" class="btn-gold">
+                                <i class="fas fa-gem me-2"></i>Добавить номер
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Номер</th>
-            <th>Тип</th>
-            <th>Цена за ночь</th>
-            <th>Вместимость</th>
-            <th>Статус</th>
-            <th>Действия</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for room in rooms %}
-        <tr>
-            <td>{{ room.id }}</td>
-            <td>{{ room.room_number }}</td>
-            <td>
-                {% if room.type == 'single' %}Одноместный
-                {% elif room.type == 'double' %}Двухместный
-                {% else %}Люкс{% endif %}
-            </td>
-            <td>{{ room.price_per_night }} ₽</td>
-            <td>{{ room.capacity }}</td>
-            <td class="{% if room.is_available %}available{% else %}not-available{% endif %}">
-                {% if room.is_available %}✔ Свободен{% else %}✘ Занят{% endif %}
-            </td>
-            <td>
-               <a href="/edit/{{ room.id }}">✏️ Редактировать</a>
-               <a href="/delete/{{ room.id }}" onclick="return confirm('Удалить номер?')">🗑️ Удалить</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        <!-- Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th>№ комнаты</th>
+                                        <th>Тип</th>
+                                        <th>Цена/ночь</th>
+                                        <th class="text-center">Вместимость</th>
+                                        <th class="text-center">Статус</th>
+                                        <th class="text-center">Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for room in rooms %}
+                                    <tr>
+                                        <td class="text-center fw-bold">#{{ room.id }}</td>
+                                        <td class="fw-bold fs-5">{{ room.room_number }}</td>
+                                        <td>
+                                            {% if room.type == 'single' %}
+                                                <span class="badge badge-single px-3 py-2"><i class="fas fa-user me-1"></i>Одноместный</span>
+                                            {% elif room.type == 'double' %}
+                                                <span class="badge badge-double px-3 py-2"><i class="fas fa-users me-1"></i>Двухместный</span>
+                                            {% else %}
+                                                <span class="badge badge-suite px-3 py-2"><i class="fas fa-crown me-1"></i>Люкс</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="fw-bold text-primary">{{ room.price_per_night }} ₽</td>
+                                        <td class="text-center">
+                                            <i class="fas fa-person-walking-arrow-right me-1"></i> {{ room.capacity }}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if room.is_available %}
+                                                <span class="status-available"><i class="fas fa-check-circle me-1"></i>Свободен</span>
+                                            {% else %}
+                                                <span class="status-occupied"><i class="fas fa-times-circle me-1"></i>Занят</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="/edit/{{ room.id }}" class="btn btn-sm btn-warning me-2">
+                                                <i class="fas fa-edit"></i> Редактировать
+                                            </a>
+                                            <a href="/delete/{{ room.id }}" class="btn btn-sm btn-danger"
+                                               onclick="return confirm('Удалить номер {{ room.room_number }}?')">
+                                                <i class="fas fa-trash-alt"></i> Удалить
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-     {% if not rooms %}
-        <p>Нет добавленных номеров. Нажмите "Добавить номер" чтобы создать первый.</p>
-    {% endif %}
+        <!-- Empty state -->
+        {% if not rooms %}
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <div class="card shadow-sm border-0 bg-light">
+                    <div class="card-body py-5">
+                        <i class="fas fa-bed fa-4x text-muted mb-3"></i>
+                        <h3>Нет добавленных номеров</h3>
+                        <p class="text-muted">Нажмите кнопку "Добавить номер", чтобы создать первый</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
