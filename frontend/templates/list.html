@@ -37,8 +37,8 @@
                 {% if room.is_available %}✔ Свободен{% else %}✘ Занят{% endif %}
             </td>
             <td>
-                <a href="/edit/{{ room_id }}>">✎ Редактировать</a>
-                <a href="/delete/{{ room_id }}" onclick="return confirm('Удалить номер?')">Удалить</a>
+               <a href="/edit/{{ room.id }}">✏️ Редактировать</a>
+               <a href="/delete/{{ room.id }}" onclick="return confirm('Удалить номер?')">🗑️ Удалить</a>
             </td>
         </tr>
         {% endfor %}
