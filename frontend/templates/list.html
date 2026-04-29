@@ -20,14 +20,39 @@
                                 <i class="fas fa-hotel fa-2x me-3"></i>
                                 <h1 class="d-inline-block h3 mb-0">Управление номерами отеля</h1>
                             </div>
-                            <a href="/create" class="btn-gold">
-                                <i class="fas fa-gem me-2"></i>Добавить номер
-                            </a>
+                            <div>
+                                {% if select_mode %}
+                                    <a href="/" class="btn btn-outline-light me-2">
+                                        <i class="fas fa-times me-1"></i>Отменить выбор
+                                    </a>
+                                {% else %}
+                                    <a href="/?select=true" class="btn btn-outline-light me-2">
+                                        <i class="fas fa-check-square me-1"></i>Выбрать номера
+                                    </a>
+                                {% endif %}
+                                <a href="/create" class="btn-gold">
+                                    <i class="fas fa-gem me-2"></i>Добавить номер
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        {% if select_mode %}
+        <form method="post" action="/delete-selected">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-info-circle me-2"></i>Выберите номера для удаления</span>
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Удалить выбранные номера?')">
+                            <i class="fas fa-trash-alt me-2"></i>Удалить выбранные
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
 
         <!-- Table -->
         <div class="row">
@@ -38,6 +63,11 @@
                             <table class="table table-hover align-middle mb-0">
                                 <thead class="table-dark">
                                     <tr>
+                                        {% if select_mode %}
+                                            <th class="checkbox-column">
+                                                <input type="checkbox" id="selectAll" onclick="document.querySelectorAll('.room-checkbox').forEach(cb => cb.checked = this.checked)">
+                                            </th>
+                                        {% endif %}
                                         <th class="text-center">ID</th>
                                         <th>№ комнаты</th>
                                         <th>Тип</th>
@@ -50,6 +80,11 @@
                                 <tbody>
                                     {% for room in rooms %}
                                     <tr>
+                                        {% if select_mode %}
+                                            <td class="checkbox-column">
+                                                <input type="checkbox" name="selected_rooms" value="{{ room.id }}" class="room-checkbox">
+                                            </td>
+                                        {% endif %}
                                         <td class="text-center fw-bold">#{{ room.id }}</td>
                                         <td class="fw-bold fs-5">{{ room.room_number }}</td>
                                         <td>
@@ -91,6 +126,10 @@
             </div>
         </div>
 
+        {% if select_mode %}
+        </form>
+        {% endif %}
+
         <!-- Empty state -->
         {% if not rooms %}
         <div class="row mt-5">
@@ -108,5 +147,14 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Выделение всех чекбоксов
+        const selectAllCheckbox = document.getElementById('selectAll');
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function() {
+                document.querySelectorAll('.room-checkbox').forEach(cb => cb.checked = this.checked);
+            });
+        }
+    </script>
 </body>
 </html>

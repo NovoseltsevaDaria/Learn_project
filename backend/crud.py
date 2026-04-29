@@ -16,15 +16,17 @@ def create_room(room_data: dict):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO rooms (room_number, type, price_per_night, is_available, capacity, description)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO rooms (room_number, type, price_per_night, is_available, capacity, description, has_washing_machine, has_dishwasher)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         room_data["room_number"],
         room_data["type"],
         room_data["price_per_night"],
         int(room_data["is_available"]),
         room_data["capacity"],
-        room_data.get("description")
+        room_data.get("description"),
+        int(room_data.get("has_washing_machine", False)),
+        int(room_data.get("has_dishwasher", False))
     ))
     conn.commit()
     new_id = cursor.lastrowid
@@ -35,7 +37,7 @@ def update_room(room_id: int, room_data: dict):
     conn = get_connection()
     conn.execute("""
         UPDATE rooms 
-        SET room_number = ?, type = ?, price_per_night = ?, is_available = ?, capacity = ?, description = ?
+        SET room_number = ?, type = ?, price_per_night = ?, is_available = ?, capacity = ?, description = ?, has_washing_machine = ?, has_dishwasher = ?
         WHERE id = ?
     """, (
         room_data["room_number"],
@@ -44,6 +46,8 @@ def update_room(room_id: int, room_data: dict):
         int(room_data["is_available"]),
         room_data["capacity"],
         room_data.get("description"),
+        int(room_data.get("has_washing_machine", False)),
+        int(room_data.get("has_dishwasher", False)),
         room_id
     ))
     conn.commit()

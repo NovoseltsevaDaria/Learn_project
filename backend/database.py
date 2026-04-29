@@ -12,15 +12,17 @@ def init_db():
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS rooms (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            room_number INTEGER NOT NULL UNIQUE,
-            type TEXT NOT NULL,
-            price_per_night REAL NOT NULL,
-            is_available INTEGER NOT NULL,
-            capacity INTEGER NOT NULL,
-            description TEXT
-        )
-    """)
+            CREATE TABLE IF NOT EXISTS rooms (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                room_number INTEGER NOT NULL UNIQUE,
+                type TEXT NOT NULL,
+                price_per_night REAL NOT NULL,
+                is_available INTEGER NOT NULL,
+                capacity INTEGER NOT NULL,
+                description TEXT,
+                has_washing_machine INTEGER DEFAULT 0,
+                has_dishwasher INTEGER DEFAULT 0
+            )
+        """)
     conn.commit()
     conn.close()

@@ -244,3 +244,11 @@ h1 {
 .btn-gold {
     animation: pulse 2s infinite;
 }
+
+.checkbox-column {
+            width: 50px;
+            text-align: center;
+        }
+        .hidden-checkbox {
+            display: none;
+        }

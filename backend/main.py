@@ -13,6 +13,10 @@ def startup():
 # GET /rooms - список всех номеров
 @app.get("/rooms", response_model=list[RoomRead])
 def get_rooms():
+    '''
+    Выводит список комнат
+    :return: Список всех комнат
+    '''
     return get_all_rooms()
 
 # GET /rooms/{id} - один номер
